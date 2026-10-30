@@ -6,8 +6,8 @@ SWEP.PrintName = "RedPistol"
 SWEP.Instructions = "a cool pistol. First iteration of the addon."
 SWEP.Category = "Other"
 
-SWEP.Primary = SWEP.Primary or {}
-SWEP.Secondary = SWEP.Secondary or {}
+SWEP.Primary = SWEP.Primary
+SWEP.Secondary = SWEP.Secondary
 
 SWEP.Spawnable = true
 SWEP.AdminOnly = false
