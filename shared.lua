@@ -6,8 +6,8 @@ SWEP.PrintName = "RedPistol"
 SWEP.Instructions = "a cool pistol. First iteration of the addon."
 SWEP.Category = "Other"
 
-SWEP.Primary = SWEP.Primary
-SWEP.Secondary = SWEP.Secondary
+SWEP.Primary = SWEP.Primary or {}
+SWEP.Secondary = SWEP.Secondary or {}
 
 SWEP.Spawnable = true
 SWEP.AdminOnly = false
@@ -19,29 +19,38 @@ SWEP.UseHands = true
 
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = true
-SWEP.Primary.ClipSize = 120
+
+SWEP.Primary.ClipSize = 12
 SWEP.Primary.DefaultClip = 12
-SWEP.Secondary.ClipSize = 60
+SWEP.Primary.Automatic = false
+SWEP.Primary.Ammo = "Pistol"
+
+SWEP.Secondary.ClipSize = 6
 SWEP.Secondary.DefaultClip = 6
+SWEP.Secondary.Automatic = false
+SWEP.Secondary.Ammo = "Buckshot"
 
 SWEP.FireLightSize = 250
 SWEP.FireLightTime = 0.1
 SWEP.FireLightColor = Color(255, 70, 10)
 
+function SWEP:CanPrimaryAttack()
+    if self:Ammo1() <= 0 then
+        self:Reload()
+        return false
+    end
+    return true
+end
+
 function SWEP:PrimaryAttack()
-    if self and not self:CanPrimaryAttack() then return end
+    if not self:CanPrimaryAttack() then
+         return 
+    end
     self:SetNextPrimaryFire(CurTime() + 0.3)
     self:EmitSound("Weapon_Pistol.Single")
     self:ShootBullet(15, 1, 0.02)
     self:TakePrimaryAmmo(1)
     self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-    function self:CanPrimaryAttack()
-        if self:Ammo1() <= 0 then
-            self:Reload()
-            return false
-        end
-        return true
-    end
     if IsValid(self.owner) then
         self.owner:SetAnimation(PLAYER_ATTACK1)
         self.owner:MuzzleFlash()
@@ -50,20 +59,25 @@ function SWEP:PrimaryAttack()
         end
     end
 end
+
+function SWEP:CanSecondaryAttack()
+    if self:Ammo2() <= 0 then
+        self:Reload()
+        return false
+    end
+    return true
+end
+
 function SWEP:SecondaryAttack()
-    if IsValid(self.owner) and self.owner:KeyDown(IN_ATTACK2) then
+    if not self:CanSecondaryAttack() then
+        return
+    end
         self:SetNextSecondaryFire(CurTime() + 0.3)
         self:EmitSound("Weapon_Shotgun.Single")
         self:ShootBullet(15, 6, 0.1)
-        self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
         self:TakeSecondaryAmmo(2)
-        function self:CanSecondaryAttack()
-            if self:Ammo2() <= 0 then
-                self:Reload()
-                return false
-            end
-            return true
-        end
+        self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
+    
         if IsValid(self.owner) then
             self.owner:ViewPunch(Angle(-1, 0, 0))
             self.owner:SetAnimation(PLAYER_ATTACK1)
@@ -79,7 +93,6 @@ function SWEP:SecondaryAttack()
         self.owner:MuzzleFlash()
         if CLIENT then
     self:CreateFireFlash()
-    end
     end
 end
 if CLIENT then
