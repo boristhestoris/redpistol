@@ -85,23 +85,16 @@ function SWEP:SecondaryAttack()
         self:TakeSecondaryAmmo(2)
         self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
 
-        if IsValid(self.owner) then
-            self.owner:ViewPunch(Angle(-1, 0, 0))
-            self.owner:SetAnimation(PLAYER_ATTACK1)
-            self.owner:MuzzleFlash()
+        local owner = self:GetOwner()
+        if IsValid(owner) then
+            owner:ViewPunch(Angle(-1, 0, 0))
+            owner:SetAnimation(PLAYER_ATTACK1)
+             owner:MuzzleFlash()
             if CLIENT then
-                self:CreateFireFlash()
+                owner:CreateFireFlash()
             end
         end
     end
-    if IsValid(self.owner) then
-        self.owner:ViewPunch(Angle(-1, 0, 0))
-    self.owner:SetAnimation(PLAYER_ATTACK1)
-        self.owner:MuzzleFlash()
-        if CLIENT then
-    self:CreateFireFlash()
-    end
-end
 if CLIENT then
     function SWEP:PreDrawViewModel(vm, wep, ply)
         render.SetColorModulation(1, 0.15, 0.15) -- Red tint
