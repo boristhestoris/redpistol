@@ -96,7 +96,7 @@ function SWEP:SecondaryAttack()
         end
     end
 if CLIENT then
-    function SWEP:DrawViewModel(vm, wep, ply)
+    function SWEP:DrawViewModel(vm, wep, ply) -- Draw the view model with a red tint
         if IsValid(vm) then
             vm:SetColor(Color(249, 29, 29)) -- Red tint
         end
