@@ -20,7 +20,7 @@ SWEP.UseHands = true
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = true
 
-SWEP.Primary.ClipSize = 12
+SWEP.Primary.ClipSize = 12 -- TODO: Add reload sfx for the pistol.
 SWEP.Primary.DefaultClip = 12
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "Pistol"
@@ -96,18 +96,15 @@ function SWEP:SecondaryAttack()
         end
     end
 if CLIENT then
-    function SWEP:PreDrawViewModel(vm, wep, ply)
-        render.SetColorModulation(1, 0.15, 0.15) -- Red tint
-    end
-
-    function SWEP:PostDrawViewModel(vm, wep, ply)
-        render.SetColorModulation(1, 1, 1) -- Reset to normal
+    function SWEP:DrawViewModel(vm, wep, ply)
+        if IsValid(vm) then
+            vm:SetColor(Color(249, 29, 29)) -- Red tint
+        end
     end
 
     function SWEP:DrawWorldModel()
-        render.SetColorModulation(1, 0.15, 0.15) -- Red tint
+        self.SetColor(Color(249, 29, 29)) -- Red tint
         self:DrawModel()
-        render.SetColorModulation(1, 1, 1) -- Reset to normal
     end
 
     function SWEP:CreateFireFlash()
