@@ -24,19 +24,21 @@ SWEP.Primary.ClipSize = 12
 SWEP.Primary.DefaultClip = 12
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "Pistol"
+SWEP.Primary.Delay = 0.3
 
 SWEP.Secondary.ClipSize = 6
 SWEP.Secondary.DefaultClip = 6
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "Buckshot"
+SWEP.Secondary.Delay = 0.3
 
 SWEP.FireLightSize = 250
 SWEP.FireLightTime = 0.1
 SWEP.FireLightColor = Color(255, 70, 10)
 
 function SWEP:CanPrimaryAttack()
-    if self:Ammo1() <= 0 then
-        self:Reload()
+    if self:Clip1() <= 0 then
+        self:EmitSound("Weapon_Pistol.Empty")
         return false
     end
     return true
@@ -44,25 +46,30 @@ end
 
 function SWEP:PrimaryAttack()
     if not self:CanPrimaryAttack() then
-         return 
+         return
     end
-    self:SetNextPrimaryFire(CurTime() + 0.3)
+
+    self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
     self:EmitSound("Weapon_Pistol.Single")
     self:ShootBullet(15, 1, 0.02)
     self:TakePrimaryAmmo(1)
     self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-    if IsValid(self.owner) then
-        self.owner:SetAnimation(PLAYER_ATTACK1)
-        self.owner:MuzzleFlash()
+
+    local owner = self:GetOwner()
+
+    if IsValid(owner) then
+        owner:SetAnimation(PLAYER_ATTACK1)
+        owner:MuzzleFlash()
+
         if CLIENT then
-        self:CreateFireFlash()
+         self:CreateFireFlash()
         end
     end
 end
 
 function SWEP:CanSecondaryAttack()
-    if self:Ammo2() <= 0 then
-        self:Reload()
+    if self:Clip2() <= 0 then
+        self:EmitSound("Weapon_Pistol.Empty")
         return false
     end
     return true
@@ -72,12 +79,12 @@ function SWEP:SecondaryAttack()
     if not self:CanSecondaryAttack() then
         return
     end
-        self:SetNextSecondaryFire(CurTime() + 0.3)
+        self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
         self:EmitSound("Weapon_Shotgun.Single")
         self:ShootBullet(15, 6, 0.1)
         self:TakeSecondaryAmmo(2)
         self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
-    
+
         if IsValid(self.owner) then
             self.owner:ViewPunch(Angle(-1, 0, 0))
             self.owner:SetAnimation(PLAYER_ATTACK1)
