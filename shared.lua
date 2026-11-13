@@ -102,10 +102,16 @@ function SWEP:SecondaryAttack()
 
     if CLIENT then
         function SWEP:PreDrawViewModel(vm, wep, ply)
-            if IsValid(vm) then
-                vm:SetColor(Color(249, 29, 29)) -- Red tint
-            end
-        end
+            render.SetColorModulation(249 / 255, 29 / 255, 29 / 255) -- Red tint
+    end
+
+    function SWEP:ViewModelDrawn(vm)
+        render.SetColorModulation(1, 1, 1) -- Reset to default
+    end
+
+    hook.Add("PreDrawPlayerHands", "RedPistolResetHandColor", function()
+            render.SetColorModulation(1, 1, 1) -- Reset to default
+    end)
 
     function SWEP:DrawWorldModel()
         self:SetColor(Color(249, 29, 29)) -- Red tint
