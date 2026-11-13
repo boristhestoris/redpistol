@@ -72,6 +72,7 @@ function SWEP:CanSecondaryAttack()
         self:EmitSound("Weapon_Pistol.Empty")
         return false
     end
+
     return true
 end
 
@@ -79,6 +80,7 @@ function SWEP:SecondaryAttack()
     if not self:CanSecondaryAttack() then
         return
     end
+
         self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
         self:EmitSound("Weapon_Shotgun.Single")
         self:ShootBullet(15, 6, 0.1)
@@ -86,52 +88,52 @@ function SWEP:SecondaryAttack()
         self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
 
         local owner = self:GetOwner()
+
         if IsValid(owner) then
             owner:ViewPunch(Angle(-1, 0, 0))
             owner:SetAnimation(PLAYER_ATTACK1)
-             owner:MuzzleFlash()
+            owner:MuzzleFlash()
+
             if CLIENT then
-                owner:CreateFireFlash()
+                self:CreateFireFlash()
             end
         end
     end
-if CLIENT then
-    function SWEP:DrawViewModel(vm, wep, ply) -- Draw the view model with a red tint
-        if IsValid(vm) then
-            vm:SetColor(Color(249, 29, 29)) -- Red tint
+
+    if CLIENT then
+        function SWEP:PreDrawViewModel(vm, wep, ply)
+            if IsValid(vm) then
+                vm:SetColor(Color(249, 29, 29)) -- Red tint
+            end
         end
-    end
 
     function SWEP:DrawWorldModel()
-        self.SetColor(Color(249, 29, 29)) -- Red tint
+        self:SetColor(Color(249, 29, 29)) -- Red tint
         self:DrawModel()
     end
 
     function SWEP:CreateFireFlash()
-        if IsValid(self) and not self:IsValid() then return end
+        if not IsValid(self) then return end
+
         local owner = self:GetOwner()
         if not IsValid(owner) then return end
-        if IsValid(self.owner) then
-            local viewModel = owner:GetViewModel()
-            if not IsValid(viewModel) then return end
 
-            local attachmentNumber = viewModel:LookupAttachment("muzzle")
-            if attachmentNumber == 0 then return end
-
-            local attachment = viewModel:GetAttachment(attachmentNumber)
-            if not attachment then return end
-
-            local light = DynamicLight(self:EntIndex())
-            if light then
-                light.pos = attachment.Pos
-                light.r = 255
-                light.g = 70
-                light.b = 10
-                light.brightness = 5
-                light.Decay = 1000
-                light.Size = self.FireLightSize
-                light.DieTime = CurTime() + self.FireLightTime
-            end
+        local viewModel = owner:GetViewModel()
+        if not IsValid(viewModel) then return end
+        local attachmentNumber = viewModel:LookupAttachment("muzzle")
+        if attachmentNumber == 0 then return end
+        local attachment = viewModel:GetAttachment(attachmentNumber)
+        if not attachment then return end
+        local light = DynamicLight(self:EntIndex())
+        if light then
+            light.pos = attachment.Pos
+            light.r = 255
+            light.g = 70
+            light.b = 10
+            light.brightness = 5
+            light.Decay = 1000
+            light.Size = self.FireLightSize
+            light.DieTime = CurTime() + self.FireLightTime
         end
     end
 end
