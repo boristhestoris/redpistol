@@ -119,6 +119,7 @@ if CLIENT then
 
     function SWEP:DrawWorldModel()
         self:SetColor(Color(249, 29, 29)) -- Red tint
+        self:SetColor(Color(249, 29, 29)) -- Red tint
         self:DrawModel()
     end
 
