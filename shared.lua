@@ -8,6 +8,7 @@ SWEP.Category = "Other"
 
 SWEP.Primary = SWEP.Primary or {}
 SWEP.Secondary = SWEP.Secondary or {}
+SWEP.soundreload = "Weapon_Pistol.Reload" -- TODO: Double-check reloading sound effects for any inconsistencies.
 
 SWEP.Spawnable = true
 SWEP.AdminOnly = false
@@ -20,7 +21,7 @@ SWEP.UseHands = true
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = true
 
-SWEP.Primary.ClipSize = 12 -- TODO: Add reload sfx for the pistol.
+SWEP.Primary.ClipSize = 12
 SWEP.Primary.DefaultClip = 12
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "Pistol"
@@ -31,10 +32,16 @@ SWEP.Secondary.DefaultClip = 6
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "Buckshot"
 SWEP.Secondary.Delay = 0.3
-
 SWEP.FireLightSize = 250
 SWEP.FireLightTime = 0.1
 SWEP.FireLightColor = Color(255, 70, 10)
+
+function SWEP:BulletTypes()
+    AddAmmoType:flamepistol
+    
+local.flamepistol = 
+
+
 
 function SWEP:CanPrimaryAttack()
     if self:Clip1() <= 0 then
@@ -95,15 +102,23 @@ function SWEP:SecondaryAttack()
             end
         end
     end
+
+function SWEP:Reload()
+    self:DefaultReload(ACT_VM_RELOAD)
+    self:EmitSound("weapons/pistol/reload1.wav")
+end
+
 if CLIENT then
-    function SWEP:DrawViewModel(vm, wep, ply) -- Draw the view model with a red tint
+    function SWEP:DrawViewModel(vm,  wep, ply) -- Draw the view model with a red tint
         if IsValid(vm) then
             vm:SetColor(Color(249, 29, 29)) -- Red tint
+            vm:UseHands(Color(128, 128, 80)) -- Red tint for hands
+            vm:DrawModel()
         end
     end
 
     function SWEP:DrawWorldModel()
-        self.SetColor(Color(249, 29, 29)) -- Red tint
+        self:SetColor(Color(249, 29, 29)) -- Red tint
         self:DrawModel()
     end
 
